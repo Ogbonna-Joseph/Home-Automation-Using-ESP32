@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <meta name="viewport" content="width=device=width, initial-scale=1\">
+      <title>HOME AUTOMATION</title>
+      <style>
+        html{font-family: Helvetica; display: inline-block; margin: 0px auto; text-align: center; background-color: rgba(120, 112, 228, 0.911);}
+        body{margin-top: 50px;}
+        h1{ margin: 50px auto 30px; font-size: 37px; font-family: fantasy}
+        h3{margin-bottom: 20px; font-family: Tahoma}
+        h4{margin-top: 20px; font-size: 20px; font-family: Tahoma}
+        .button{background-color:blue; border-radius: 10px; block-size: 30pt; }
+        footer{font-size: 15px; color: blue;}
+      </style>
+      
+    </head>
+  <body>
+    <h1>HOME AUTOMATION WITH ARDUINO AND ESP32 </h1>
+    <h3>THIS IS A SIMPLE AUTOMATION PROJECT THAT IS USED TO CONTROL LIGHT BULBS USING WIFI CONNECTION</h3>
+    <h4>THE LIGHT BULB DATA WILL BE SENT TO THE THINGSPEAK IOT PLATFORM</h4>
+    <p id="bulb1">BULD STATUS : OFF</p>
+    <a href="#"><button type="button" class="button button-on redclr" onclick="onbulb1()"> .ON</button></a>
+    <a href="#"><button type="button" class="button button-off" onclick="offbulb1()">OFF</button></a>
+    <p id="bulb2">BULB STATUS : OFF</p>
+    <a href="#"><button type="button" class="button button-on greenclr" onclick="onbulb2()"> .ON</button></a>
+    <a href="#"><button type="button" class="button button-off" onclick="offbulb2()">OFF</button></a>
+    <p id="bulb3">BULB STATUS : OFF</p>
+    <a href="#"><button type="button" class="button button-on greenclr" onclick="onbulb3()"> .ON</button></a>
+    <a href="#"><button type="button" class="button button-off" onclick="offbulb3()">OFF</button></a>
+    <p id="bulb4">BULB STATUS : OFF</p>
+    <a href="#"><button type="button" class="button button-on relayclr" onclick="onbulb4()"> .ON</button></a>
+    <a href="#"><button type="button" class="button button-off" onclick="offbulb4()">OFF</button></a>
+    <br>
+    <br>
+    <br>
+    <footer>
+        <B>AUTOMATION BY JOSEPH</B>
+        <script>
+                function onbulb1(){document.getElementById("bulb1").innerHTML="BULB STATUS : ON"};
+                function onbulb2(){document.getElementById("bulb2").innerHTML="BULB STATUS : ON"};
+                function onbulb3(){document.getElementById("bulb3").innerHTML="BULB STATUS : ON"};
+                function onbulb4(){document.getElementById("bulb4").innerHTML="BULB STATUS : ON"};
+                function offbulb1(){document.getElementById("bulb1").innerHTML="BULB STATUS : OFF"};
+                function offbulb2(){document.getElementById("bulb2").innerHTML="BULB STATUS : OFF"};
+                function offbulb3(){document.getElementById("bulb3").innerHTML="BULB STATUS : OFF"};
+                function offbulb4(){document.getElementById("bulb4").innerHTML="BULB STATUS : OFF"};
+                
+              </script>
+    </footer>
+  </body>
+  </html>
