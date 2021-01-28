@@ -20,6 +20,11 @@
 const char* ssid = ".........";
 const char* password = "........";
 
+unsigned long myChannelNumber = 00000;
+const char * myWriteAPIKey = "........";
+
+WiFiClient  client;
+
 
 char homepage[] PROGMEM = R"=====(
 <!DOCTYPE html>
@@ -56,20 +61,23 @@ char homepage[] PROGMEM = R"=====(
     <a href="/bulb4-off"><button type="button" class="button " onclick="offbulb4()">OFF</button></a>
     <br>
     <br>
+    <p>TO GO THE IOT PLATFORM, <a href="https://www.thingspeak.com">CLICK HERE</a></p>
+    <br>
+    <br>
     <br>
     <footer>
         <B>AUTOMATION BY JOSEPH</B>
         <script>
-                function onbulb1(){document.getElementById("bulb1").innerHTML="BULB STATUS : ON"};
-                function onbulb2(){document.getElementById("bulb2").innerHTML="BULB STATUS : ON"};
-                function onbulb3(){document.getElementById("bulb3").innerHTML="BULB STATUS : ON"};
-                function onbulb4(){document.getElementById("bulb4").innerHTML="BULB STATUS : ON"};
-                function offbulb1(){document.getElementById("bulb1").innerHTML="BULB STATUS : OFF"};
-                function offbulb2(){document.getElementById("bulb2").innerHTML="BULB STATUS : OFF"};
-                function offbulb3(){document.getElementById("bulb3").innerHTML="BULB STATUS : OFF"};
-                function offbulb4(){document.getElementById("bulb4").innerHTML="BULB STATUS : OFF"};
+             function onbulb1(){document.getElementById("bulb1").innerHTML="BULB STATUS : ON"};
+             function onbulb2(){document.getElementById("bulb2").innerHTML="BULB STATUS : ON"};
+             function onbulb3(){document.getElementById("bulb3").innerHTML="BULB STATUS : ON"};
+             function onbulb4(){document.getElementById("bulb4").innerHTML="BULB STATUS : ON"};
+             function offbulb1(){document.getElementById("bulb1").innerHTML="BULB STATUS : OFF"};
+             function offbulb2(){document.getElementById("bulb2").innerHTML="BULB STATUS : OFF"};
+             function offbulb3(){document.getElementById("bulb3").innerHTML="BULB STATUS : OFF"};
+             function offbulb4(){document.getElementById("bulb4").innerHTML="BULB STATUS : OFF"};
                 
-              </script>
+        </script>
     </footer>
   </body>
   </html>)=====";
@@ -84,53 +92,88 @@ const int bulb2 =  13;
 const int bulb3 =  14;
 const int bulb4 =  15;
 
+void writetothingspeak(){
+    int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+    if(x == 200){
+      Serial.println("Channel update successful.");
+    }
+    else{
+      Serial.println("Problem updating channel. HTTP error code " + String(x));
+    }
+  
+  }
 
 
 void onbulb1(){
     digitalWrite(bulb1, HIGH);
     Serial.println("Bulb1 is being turned on");
+    String bulb01 = "The first bulb is on";
+    ThingSpeak.setField(1, bulb01);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
     }
     
 void onbulb2(){
     digitalWrite(bulb2, HIGH);
     Serial.println("bulb2 is being turned on");
+    String bulb02 = "The second bulb is on";
+    ThingSpeak.setField(2, bulb02);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
+    
     }
 
 void onbulb3(){
     digitalWrite(bulb3, HIGH);
     Serial.println("bulb3 is being turned on");
+    String bulb03 = "The third bulb is on";
+    ThingSpeak.setField(3, bulb03);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
     }
 
 void onbulb4(){
     digitalWrite(bulb4, HIGH);
     Serial.println("bulb4 is being turned on");
+    String bulb04 = "The fourth bulb is on";
+    ThingSpeak.setField(4, bulb04);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
     }
 
 void offbulb1(){
     digitalWrite(bulb1, LOW);
     Serial.println("bulb1 is being turned off");
+    String bulb01 = "The first bulb is off";
+    ThingSpeak.setField(1, bulb01);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
     }
     
 void offbulb2(){
     digitalWrite(bulb2, LOW);
     Serial.println("bulb2 is being turned off");
+    String bulb02 = "The second bulb is off";
+    ThingSpeak.setField(2, bulb02);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
     }
 
 void offbulb3(){
     digitalWrite(bulb3, LOW);
     Serial.println("bulb3 is being turned off");
+    String bulb03 = "The third bulb is off";
+    ThingSpeak.setField(3, bulb03);
+    writetothingspeak();
     server.send(200, "text/html", homepage);
     }
 
 void offbulb4(){
     digitalWrite(bulb4, LOW);
     Serial.println("bulb4 is being turned off");
+    String bulb04 = "The fourth bulb is off";
+    ThingSpeak.setField(4, bulb04);
+    writetothingspeak() ;
     server.send(200, "text/html", homepage);
     }
 
@@ -159,6 +202,8 @@ void handleNotFound() {
 }
 
 void setup(void) {
+
+  
   pinMode(bulb1, OUTPUT);
   pinMode(bulb2, OUTPUT);
   pinMode(bulb3, OUTPUT);
@@ -166,9 +211,12 @@ void setup(void) {
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
+
+  
   WiFi.mode(WIFI_STA);
   WiFi.begin(ssid, password);
   Serial.println("");
+  ThingSpeak.begin(client);
 
   // Wait for connection
   while (WiFi.status() != WL_CONNECTED) {
@@ -198,6 +246,7 @@ void setup(void) {
   server.on("/inline", []() {
     server.send(200, "html/plain", "this works as well");
   });
+
 
   server.onNotFound(handleNotFound);
 
