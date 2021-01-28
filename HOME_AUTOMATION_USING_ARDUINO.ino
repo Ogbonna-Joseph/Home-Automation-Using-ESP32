@@ -1,4 +1,5 @@
 
+
 /*    
  *  THIS IS AN HOME AUTOMATION PROJECT USING ARDUINO AND ESP32
  *  OGBONNA JOSEPH PROJECT DIRECTION    
@@ -13,8 +14,10 @@
 #include <WiFiClient.h>
 #include <WebServer.h>
 #include <ESPmDNS.h>
+#include <ThingSpeak.h>
 
-const char* ssid = "........";
+
+const char* ssid = ".........";
 const char* password = "........";
 
 
@@ -40,17 +43,17 @@ char homepage[] PROGMEM = R"=====(
     <h3>THIS IS A SIMPLE AUTOMATION PROJECT THAT IS USED TO CONTROL LIGHT BULBS USING WIFI CONNECTION</h3>
     <h4>THE LIGHT BULB DATA WILL BE SENT TO THE THINGSPEAK IOT PLATFORM</h4>
     <p id="bulb1">BULD STATUS : OFF</p>
-    <a href="#"><button type="button" class="button button-on redclr" onclick="onbulb1()"> .ON</button></a>
-    <a href="#"><button type="button" class="button button-off" onclick="offbulb1()">OFF</button></a>
+    <a href="/bulb1-on"><button type="button" class="button " onclick="onbulb1()"> .ON</button></a>
+    <a href="/bulb1-off"><button type="button" class="button " onclick="offbulb1()">OFF</button></a>
     <p id="bulb2">BULB STATUS : OFF</p>
-    <a href="#"><button type="button" class="button button-on greenclr" onclick="onbulb2()"> .ON</button></a>
-    <a href="#"><button type="button" class="button button-off" onclick="offbulb2()">OFF</button></a>
+    <a href="/bulb2-on"><button type="button" class="button " onclick="onbulb2()"> .ON</button></a>
+    <a href="/bulb2-off"><button type="button" class="button " onclick="offbulb2()">OFF</button></a>
     <p id="bulb3">BULB STATUS : OFF</p>
-    <a href="#"><button type="button" class="button button-on greenclr" onclick="onbulb3()"> .ON</button></a>
-    <a href="#"><button type="button" class="button button-off" onclick="offbulb3()">OFF</button></a>
+    <a href="/bulb3-on"><button type="button" class="button " onclick="onbulb3()"> .ON</button></a>
+    <a href="/bulb3-off"><button type="button" class="button " onclick="offbulb3()">OFF</button></a>
     <p id="bulb4">BULB STATUS : OFF</p>
-    <a href="#"><button type="button" class="button button-on relayclr" onclick="onbulb4()"> .ON</button></a>
-    <a href="#"><button type="button" class="button button-off" onclick="offbulb4()">OFF</button></a>
+    <a href="/bulb4-on"><button type="button" class="button " onclick="onbulb4()"> .ON</button></a>
+    <a href="/bulb4-off"><button type="button" class="button " onclick="offbulb4()">OFF</button></a>
     <br>
     <br>
     <br>
@@ -72,9 +75,65 @@ char homepage[] PROGMEM = R"=====(
   </html>)=====";
 
 
+
 WebServer server(80);
 
-const int led = 13;
+const int led =  2;
+const int bulb1 =  12;
+const int bulb2 =  13;
+const int bulb3 =  14;
+const int bulb4 =  15;
+
+
+
+void onbulb1(){
+    digitalWrite(bulb1, HIGH);
+    Serial.println("Bulb1 is being turned on");
+    server.send(200, "text/html", homepage);
+    }
+    
+void onbulb2(){
+    digitalWrite(bulb2, HIGH);
+    Serial.println("bulb2 is being turned on");
+    server.send(200, "text/html", homepage);
+    }
+
+void onbulb3(){
+    digitalWrite(bulb3, HIGH);
+    Serial.println("bulb3 is being turned on");
+    server.send(200, "text/html", homepage);
+    }
+
+void onbulb4(){
+    digitalWrite(bulb4, HIGH);
+    Serial.println("bulb4 is being turned on");
+    server.send(200, "text/html", homepage);
+    }
+
+void offbulb1(){
+    digitalWrite(bulb1, LOW);
+    Serial.println("bulb1 is being turned off");
+    server.send(200, "text/html", homepage);
+    }
+    
+void offbulb2(){
+    digitalWrite(bulb2, LOW);
+    Serial.println("bulb2 is being turned off");
+    server.send(200, "text/html", homepage);
+    }
+
+void offbulb3(){
+    digitalWrite(bulb3, LOW);
+    Serial.println("bulb3 is being turned off");
+    server.send(200, "text/html", homepage);
+    }
+
+void offbulb4(){
+    digitalWrite(bulb4, LOW);
+    Serial.println("bulb4 is being turned off");
+    server.send(200, "text/html", homepage);
+    }
+
 
 void handleRoot() {
   digitalWrite(led, 1);
@@ -100,6 +159,10 @@ void handleNotFound() {
 }
 
 void setup(void) {
+  pinMode(bulb1, OUTPUT);
+  pinMode(bulb2, OUTPUT);
+  pinMode(bulb3, OUTPUT);
+  pinMode(bulb4, OUTPUT);
   pinMode(led, OUTPUT);
   digitalWrite(led, 0);
   Serial.begin(115200);
@@ -118,14 +181,22 @@ void setup(void) {
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  if (MDNS.begin("esp32")) {
+  if (MDNS.begin("home-automation")) {
     Serial.println("MDNS responder started");
   }
 
   server.on("/", handleRoot);
+  server.on("/bulb1-on", onbulb1);
+  server.on("/bulb1-off", offbulb1);
+  server.on("/bulb2-on", onbulb2);
+  server.on("/bulb2-off", offbulb2);
+  server.on("/bulb3-on", onbulb3);
+  server.on("/bulb3-off", offbulb3);
+  server.on("/bulb4-on", onbulb4);
+  server.on("/bulb4-off", offbulb4);
 
   server.on("/inline", []() {
-    server.send(200, "text/plain", "this works as well");
+    server.send(200, "html/plain", "this works as well");
   });
 
   server.onNotFound(handleNotFound);
